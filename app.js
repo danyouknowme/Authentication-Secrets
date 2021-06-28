@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
+const mongoose = require('mongoose');
+const excrypt = require('mongoose-encryption');
 
 const app = express();
 
@@ -10,12 +12,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true, useUnifiedTopology: true});
 
-const userSchema = {
+const userSchema = new mongoose.Schema ({
     email: String,
     password: String
-};
+});
+
+const secret = "Thisisourlittlesecrets";
+userSchema.plugin(excrypt, {secret: secret, encryptedFields: ["password"]});
 
 const User = new mongoose.model("User", userSchema);
+
 
 app.get("/", (req, res) => {
     res.render("home");
