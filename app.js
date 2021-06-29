@@ -24,9 +24,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Connect to mongodb database port 27017
 mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set("useCreateIndex", true);
 
+// Call mongoose Schema to create userSchema
 const userSchema = new mongoose.Schema ({
     email: String,
     password: String,
@@ -34,6 +36,7 @@ const userSchema = new mongoose.Schema ({
     secret: String
 });
 
+// Add some plugin to able to use some methods
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate)
 
@@ -50,6 +53,7 @@ passport.deserializeUser((id, done) => {
     });
 });
 
+// use GoogleStrategy by passport that make the web able to login via google
 passport.use(new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -159,6 +163,7 @@ app.post("/login", (req, res) => {
     });
 });
 
+// run app on localhost port 3000
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
 });
